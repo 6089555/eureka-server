@@ -1,0 +1,17 @@
+info.build.artifact: @project.artifactId@
+info.build.name: @project.name@
+info.build.description: @project.description@
+info.build.version: @project.version@
+spring:
+  application:
+    name: ${info.build.name}
+  profiles:
+    active: @projectEnv@
+eureka:
+  instance:
+    prefer-ip-address: true
+    metadata-map:
+      instanceId: ${info.build.name}:${random.value}
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
