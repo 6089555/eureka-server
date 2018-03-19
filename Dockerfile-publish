@@ -1,0 +1,12 @@
+FROM java:8-jre
+MAINTAINER liuyy1@kingnet.com
+ENV VERSION 3.0.0-SNAPSHOT
+
+VOLUME /tmp
+ADD /project/target/eureka-server.jar app.jar
+RUN bash -c 'touch /app.jar'
+ENV JAVA_OPTS=""
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+
+EXPOSE 8001
+
