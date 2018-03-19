@@ -8,6 +8,12 @@
     <artifactId>eureka-server</artifactId>
     <name>eureka-server</name>
     <description>eureka-server</description>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.0.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -35,7 +41,13 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
+    <repositories>
+        <repository>
+            <id>nexus-daocloud</id>
+            <name>Nexus daocloud</name>
+            <url>http://nexus.daocloud.io/repository/maven-public/</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
