@@ -1,5 +1,5 @@
 server:
-  port: ${port}
+  port: ${port:8001}
 eureka:
   server:
       enable-self-preservation: false
@@ -12,4 +12,4 @@ eureka:
       eviction-interval-timer-in-ms: 3000
   instance:
     hostname: ${hostname:localhost}
-    ip-address: ${ip}
+    ip-address: ${ip:localhost}
