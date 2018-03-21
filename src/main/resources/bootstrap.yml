@@ -19,4 +19,4 @@ eureka:
       instanceId: ${info.build.name}:${random.value}
   client:
     registerWithEureka: false
-    fetchRegistry: false
+    fetch-registry: true
