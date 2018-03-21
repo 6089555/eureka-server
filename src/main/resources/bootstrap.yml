@@ -19,6 +19,6 @@ eureka:
       instanceId: ${info.build.name}:${random.value}
   client:
     registerWithEureka: false
-    fetch-registry: true
+    fetch-registry: false
     serviceUrl:
-          defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+          defaultZone: http://${eureka.instance.ip-address}:${server.port}/eureka/
