@@ -2,7 +2,7 @@
 # Build with:
 # docker build -t eureka-server
 # Run with:
-# docker run -p 8001:8001 -d -v /tmp/logs:/opt/eureka-server/logs --name eureka-server
+# docker run -p 8001:8001 -d -v /tmp/logs:/data/eureka-server/logs --name eureka-server
 
 FROM java:8-jre
 

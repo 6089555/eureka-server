@@ -3,24 +3,48 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.kingnet.comment</groupId>
+    <groupId>com.kingnet.blockdata</groupId>
     <version>1.0-SNAPSHOT</version>
     <artifactId>eureka-server</artifactId>
     <name>eureka-server</name>
     <description>eureka-server</description>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.0.RELEASE</version>
+        <groupId>com.kingnet</groupId>
+        <artifactId>kingnet-dependencies</artifactId>
+        <version>1.0-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Finchley.M8</spring-cloud.version>
+        <com.kingnet.version>1.0-SNAPSHOT</com.kingnet.version>
+        <spring-cloud.version>Finchley.M9</spring-cloud.version>
         <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
+        <spring-boot-admin.version>2.0.0</spring-boot-admin.version>
     </properties>
+    <repositories>
+        <repository>
+            <id>kingnetNexusSnapshot</id>
+            <url>http://repos.dev.server.kingnet.com/content/groups/public-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>kingnetNexus</id>
+            <url>http://repos.dev.server.kingnet.com/content/groups/public/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -37,15 +61,22 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-dependencies</artifactId>
+                <version>${spring-boot-admin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.kingnet</groupId>
+                <artifactId>kingnet-dependencies</artifactId>
+                <version>${com.kingnet.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
-    <repositories>
-        <repository>
-            <id>nexus-daocloud</id>
-            <name>Nexus daocloud</name>
-            <url>http://nexus.daocloud.io/repository/maven-public/</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -57,45 +88,27 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.ctrip.framework.apollo</groupId>
+            <artifactId>apollo-client</artifactId>
+            <version>0.11.1</version>
+        </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>loc</id>
-            <properties>
-                <projectEnv>loc</projectEnv>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <projectEnv>dev</projectEnv>
-            </properties>
-        </profile>
-        <profile>
-            <id>test</id>
-            <properties>
-                <projectEnv>test</projectEnv>
-            </properties>
-        </profile>
-        <profile>
-            <id>grey</id>
-            <properties>
-                <projectEnv>grey</projectEnv>
-            </properties>
-        </profile>
-        <profile>
-            <id>pro</id>
-            <properties>
-                <projectEnv>pro</projectEnv>
-            </properties>
-        </profile>
-    </profiles>
     <build>
         <finalName>${project.artifactId}</finalName>
         <resources>
@@ -103,20 +116,11 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
-            <resource>
-                <directory>src/main/docker</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>**/Dockerfile</include>
-                </includes>
-                <targetPath>${project.build.directory}</targetPath>
-            </resource>
         </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.kingnet.EurekaServerApplication</mainClass>
                     <executable>true</executable>
@@ -126,6 +130,24 @@
                         <goals>
                             <goal>repackage</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <finalName>${project.artifactId}</finalName>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/assembly/assembly-descriptor.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
