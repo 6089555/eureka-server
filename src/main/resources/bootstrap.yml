@@ -26,6 +26,8 @@ eureka:
     prefer-ip-address: true
     metadata-map:
       instanceId: ${info.build.name}:${random.value}
+    hostname: ${hostname:localhost}
+    ip-address: ${ip:192.168.78.104}
   client:
     registerWithEureka: false
     fetch-registry: false
